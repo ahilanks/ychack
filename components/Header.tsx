@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Shield, Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
 
 export default function Header() {
   const pathname = usePathname();
@@ -12,7 +12,7 @@ export default function Header() {
     <header className="border-b border-border bg-card">
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-primary" />
+          <div className="h-6 w-6 rounded-full bg-orange-500" />
           <span className="text-xl font-bold">NotATrial</span>
         </Link>
 
