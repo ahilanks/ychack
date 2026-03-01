@@ -1,97 +1,120 @@
 "use client";
 
-import Image from "next/image";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { AlertTriangle, ExternalLink } from "lucide-react";
 
-const leaderboard = [
-  {
-    rank: 1,
-    name: "Wells Fargo",
-    logo: "/wflogo.png",
-    difficulty: 9.2,
-    reason: "Phone call required, 3 retention screens",
-  },
-  {
-    rank: 2,
-    name: "Bank of America",
-    logo: "/bofalogo.png",
-    difficulty: 8.7,
-    reason: "Multi-page flow, hidden cancel link",
-  },
-  {
-    rank: 3,
-    name: "Chase",
-    logo: "/chase.jpg",
-    difficulty: 7.5,
-    reason: "Support chat required, retention offer",
-  },
-  {
-    rank: 4,
-    name: "Capital One",
-    logo: "/caponelogo.jpg",
-    difficulty: 6.3,
-    reason: "Cancel buried in sub-settings",
-  },
-  {
-    rank: 5,
-    name: "TD Bank",
-    logo: "/td.jpg",
-    difficulty: 5.8,
-    reason: "Multi-step with dark patterns",
-  },
-];
+function DifficultyBar({ score }: { score: number }) {
+  let color = "bg-green-500";
+  if (score >= 7) color = "bg-red-500";
+  else if (score >= 4) color = "bg-yellow-500";
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-24 h-2 rounded-full bg-secondary overflow-hidden">
+        <div
+          className={`h-full rounded-full ${color} transition-all`}
+          style={{ width: `${score * 10}%` }}
+        />
+      </div>
+      <span className="text-sm font-bold">{score}</span>
+    </div>
+  );
+}
+
+function TacticBadge({ tactic }: { tactic: string }) {
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full bg-destructive/10 text-destructive border border-destructive/20">
+      <AlertTriangle className="h-3 w-3" />
+      {tactic}
+    </span>
+  );
+}
 
 export default function LeaderboardTable() {
+  const entries = useQuery(api.leaderboard.list);
+
+  if (entries === undefined) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (entries.length === 0) {
+    return (
+      <div className="text-center py-12 text-muted-foreground">
+        <p className="text-lg font-medium">No data yet</p>
+        <p className="text-sm mt-1">
+          Cancel some trials to see services ranked by difficulty.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <table className="w-full text-sm">
-      <thead>
-        <tr className="border-b border-border text-left text-muted-foreground">
-          <th className="px-4 py-3 font-medium">#</th>
-          <th className="px-4 py-3 font-medium">Service</th>
-          <th className="px-4 py-3 font-medium">Difficulty</th>
-          <th className="px-4 py-3 font-medium hidden sm:table-cell">Why</th>
-        </tr>
-      </thead>
-      <tbody>
-        {leaderboard.map((entry) => (
-          <tr
-            key={entry.rank}
-            className="border-b border-border last:border-0 hover:bg-muted/50 transition-colors"
-          >
-            <td className="px-4 py-3 font-mono text-muted-foreground">
-              {entry.rank}
-            </td>
-            <td className="px-4 py-3">
-              <div className="flex items-center gap-3">
-                <Image
-                  src={entry.logo}
-                  alt={entry.name}
-                  width={28}
-                  height={28}
-                  className="rounded-md"
-                />
-                <span className="font-medium">{entry.name}</span>
-              </div>
-            </td>
-            <td className="px-4 py-3">
-              <span
-                className={`font-bold ${
-                  entry.difficulty >= 8
-                    ? "text-red-400"
-                    : entry.difficulty >= 6
-                    ? "text-yellow-400"
-                    : "text-green-400"
-                }`}
-              >
-                {entry.difficulty}
-              </span>
-              <span className="text-muted-foreground">/10</span>
-            </td>
-            <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell">
-              {entry.reason}
-            </td>
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-border">
+            <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+              Rank
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+              Service
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+              Difficulty
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+              Attempts
+            </th>
+            <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+              Dark Patterns
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {entries.map((entry: any, index: number) => (
+            <tr
+              key={entry._id}
+              className="border-b border-border/50 hover:bg-secondary/30 transition-colors"
+            >
+              <td className="py-3 px-4">
+                <span className="text-lg font-bold text-muted-foreground">
+                  #{index + 1}
+                </span>
+              </td>
+              <td className="py-3 px-4">
+                <div>
+                  <span className="font-medium">{entry.serviceName}</span>
+                  <a
+                    href={entry.serviceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-1.5 inline-flex text-muted-foreground hover:text-primary"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+              </td>
+              <td className="py-3 px-4">
+                <DifficultyBar score={entry.avgDifficulty} />
+              </td>
+              <td className="py-3 px-4 text-sm">{entry.totalAttempts}</td>
+              <td className="py-3 px-4">
+                <div className="flex flex-wrap gap-1">
+                  {entry.commonTactics.map((tactic: string) => (
+                    <TacticBadge key={tactic} tactic={tactic} />
+                  ))}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

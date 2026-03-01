@@ -3,5 +3,12 @@
 export const api: any = {
   trials: {
     list: "trials:list",
+    create: "trials:create",
+    remove: "trials:remove",
+    updateStatus: "trials:updateStatus",
+  },
+  leaderboard: {
+    list: "leaderboard:list",
+    upsert: "leaderboard:upsert",
   },
 };
