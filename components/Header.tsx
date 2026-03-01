@@ -13,7 +13,7 @@ export default function Header() {
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         <Link href="/dashboard" className="flex items-center gap-2">
           <Shield className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold">TrialGuard</span>
+          <span className="text-xl font-bold">NotATrial</span>
         </Link>
 
         <nav className="flex items-center gap-6">

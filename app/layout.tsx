@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TrialGuard - Free Trial Manager",
+  title: "NotATrial - Free Trial Manager",
   description:
-    "Automatically manage free trials, cancel before they expire, and discover which services make cancellation hardest.",
+    "You forgot to cancel your free trial, and it just hit your card. Again. NotATrial tracks every free trial you sign up for, reminds you before they renew, and even cancels them for you.",
 };
 
 export default function RootLayout({
