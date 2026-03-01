@@ -17,7 +17,7 @@ export default function HeroSection() {
       }`}
     >
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter text-neutral-400">
-        Fuuuuuu****k.
+        Oh shiiii*
       </h1>
       <p className="text-base md:text-lg text-neutral-500 max-w-lg mx-auto leading-relaxed">
         You forgot to cancel your free trial. Again. It just hit your
